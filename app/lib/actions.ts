@@ -11,7 +11,7 @@ export type State = {
         firstName?: string[];
         lastName?: string[];
         address?: string[];
-        plan?: string[];
+        internetPlanId?: string[];
         status?: string[];
     };
     message?: string | null;
@@ -28,11 +28,10 @@ const ClientSchema = z.object({
     address: z.string({
         invalid_type_error: 'Моля, изберете адрес.'
     }).min(10, 'Адресът е задължителен'),
-    plan: z.string({
-        invalid_type_error: 'Моля, изберете план.'
-    }),
+    tvPlanId: z.coerce.number(),
+    internetPlanId: z.coerce.number(),
     description: z.string(),
-    status: z.enum(['pending', 'new', 'rejected', 'done'], {
+    status: z.enum(['NEW', 'TO_CONFIRM', 'FOR_VIEW', 'TO_CONNECT', 'INCIDENT', 'COMPLETE'], {
         invalid_type_error: 'Моля, изберете статус на клиент.'
     }),
     createDate: z.string(),
@@ -45,7 +44,8 @@ export async function createClient(prevState: State, formData: FormData) {
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
         address: formData.get('address'),
-        plan: formData.get('plan'),
+        tvPlanId: formData.get('tvPlanId'),
+        internetPlanId: formData.get('internetPlanId'),
         description: formData.get('description'),
         status: formData.get('status'),
     });
@@ -115,7 +115,7 @@ export async function deleteClient(id: number) {
                 id: id
             }
         });
-        
+
         console.log('deleted: ', clientDeleted);
 
         revalidatePath('/dashboard/invoices');

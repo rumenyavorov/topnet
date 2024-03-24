@@ -1,5 +1,5 @@
 // import { fetchClientPages } from "@/app/lib/data";
-import { fetchClientPages } from "@/app/lib/data";
+import { fetchClientPages } from "@/app/lib/db/clients";
 import { CreateClient } from "@/app/ui/dashboard/clients/buttons";
 import Table from "@/app/ui/dashboard/clients/table";
 import Pagination from "@/app/ui/dashboard/pagination";

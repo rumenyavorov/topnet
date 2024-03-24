@@ -1,15 +1,10 @@
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import { GreetingSkeleton } from "../skeletons";
 
 export default function Greeting() {
-    const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            // Redirect to the sign-in page
-            signIn();
-        }
-    });
 
+
+    const { data: session, status } = useSession();
     return (
         <h2 className="text-white font-semibold">
             {status === 'loading' ? (

@@ -1,4 +1,4 @@
-import { fetchClientById } from "@/app/lib/data";
+import { fetchClientById } from "@/app/lib/db/clients";
 import Breadcrumbs from "@/app/ui/dashboard/breadcrumbs";
 import EditClientForm from "@/app/ui/dashboard/clients/edit-form";
 import { notFound } from "next/navigation";

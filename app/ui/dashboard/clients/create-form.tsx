@@ -8,6 +8,7 @@ import { useState } from "react";
 import { State, createClient } from "@/app/lib/actions";
 import { Button } from "../../button";
 import { useFormState } from "react-dom";
+import { Status } from "@/app/lib/generalTypes";
 
 export default function Form() {
     const initialState = { message: null, errors: {} } as State;
@@ -79,33 +80,56 @@ export default function Form() {
                         </div>
                     </div>
                 </div>
-                {/* Plan */}
+                {/* Internet Plan */}
                 <div
                     className="mb-4"
                 >
-                    <label htmlFor="plans" className="mb-2 block text-sm font-medium">
-                        План
+                    <label htmlFor="tvPlanId" className="mb-2 block text-sm font-medium">
+                        ТВ план
                     </label>
                     <select
-                        id="plans"
+                        id="tvPlanId"
                         defaultValue=""
-                        name="plan"
+                        name="tvPlanId"
                         className="w-full border rounded-md py-2 pl-2 text-sm outline-2 focus:border-blue-300 focus:ring-blue-300"
-                        aria-describedby="plan-error"
                     >
 
                         <option value="" disabled>
                             Моля, изберете план
                         </option>
                         {plansData.map((plan) => (
-                            <option key={plan.id} value={plan.name}>
+                            <option key={plan.id} value={plan.id}>
                                 {plan.name}
                             </option>
                         ))}
                     </select>
-                    <div id="plan-error" aria-live="polite" aria-atomic="true">
-                        {state.errors?.plan &&
-                            state.errors.plan.map((error: string) => (
+                </div>
+                <div
+                    className="mb-4"
+                >
+                    <label htmlFor="internetPlanId" className="mb-2 block text-sm font-medium">
+                        Интернет план
+                    </label>
+                    <select
+                        id="internetPlanId"
+                        defaultValue=""
+                        name="internetPlanId"
+                        className="w-full border rounded-md py-2 pl-2 text-sm outline-2 focus:border-blue-300 focus:ring-blue-300"
+                        aria-describedby="internet-plan-error"
+                    >
+
+                        <option value="" disabled>
+                            Моля, изберете план
+                        </option>
+                        {plansData.map((plan) => (
+                            <option key={plan.id} value={plan.id}>
+                                {plan.name}
+                            </option>
+                        ))}
+                    </select>
+                    <div id="internet-plan-error" aria-live="polite" aria-atomic="true">
+                        {state.errors?.internetPlanId &&
+                            state.errors.internetPlanId.map((error: string) => (
                                 <p className="mt-2 text-sm text-red-500" key={error}>
                                     {error}
                                 </p>
@@ -124,7 +148,7 @@ export default function Form() {
                                     id="pending"
                                     name="status"
                                     type="radio"
-                                    value="pending"
+                                    value={Status.NEW}
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                     aria-describedby="status-error"
                                 />
@@ -132,15 +156,15 @@ export default function Form() {
                                     htmlFor="pending"
                                     className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                                 >
-                                    Заявен <ClockIcon className="h-4 w-4" />
+                                    Нов <ClockIcon className="h-4 w-4" />
                                 </label>
                             </div>
                             <div className="flex items-center">
                                 <input
-                                    id="new"
+                                    id="toConfirm"
                                     name="status"
                                     type="radio"
-                                    value="new"
+                                    value={Status.TO_CONFIRM}
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                     aria-describedby="status-error"
                                 />
@@ -148,15 +172,15 @@ export default function Form() {
                                     htmlFor="new"
                                     className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-yellow-500 px-3 py-1.5 text-xs font-medium text-white"
                                 >
-                                    За връзване <ClockIcon className="h-4 w-4" />
+                                    За потвърждение <ClockIcon className="h-4 w-4" />
                                 </label>
                             </div>
                             <div className="flex items-center">
                                 <input
-                                    id="done"
+                                    id="forView"
                                     name="status"
                                     type="radio"
-                                    value="done"
+                                    value={Status.FOR_VIEW}
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                     aria-describedby="status-error"
                                 />
@@ -164,7 +188,39 @@ export default function Form() {
                                     htmlFor="done"
                                     className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                                 >
-                                    Вързан <CheckIcon className="h-4 w-4" />
+                                    За оглед <CheckIcon className="h-4 w-4" />
+                                </label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    id="toConnect"
+                                    name="status"
+                                    type="radio"
+                                    value={Status.TO_CONNECT}
+                                    className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                                    aria-describedby="status-error"
+                                />
+                                <label
+                                    htmlFor="rejected"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-red-500 px-3 py-1.5 text-xs font-medium text-white"
+                                >
+                                    За връзване <XCircleIcon className="h-4 w-4" />
+                                </label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    id="complete"
+                                    name="status"
+                                    type="radio"
+                                    value={Status.COMPLETE}
+                                    className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
+                                    aria-describedby="status-error"
+                                />
+                                <label
+                                    htmlFor="rejected"
+                                    className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-red-500 px-3 py-1.5 text-xs font-medium text-white"
+                                >
+                                    Завършен <XCircleIcon className="h-4 w-4" />
                                 </label>
                             </div>
                             <div className="flex items-center">
@@ -172,7 +228,7 @@ export default function Form() {
                                     id="rejected"
                                     name="status"
                                     type="radio"
-                                    value="rejected"
+                                    value={Status.REJECTED}
                                     className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                                     aria-describedby="status-error"
                                 />

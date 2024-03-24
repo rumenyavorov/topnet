@@ -33,7 +33,7 @@ export default function Calendar() {
     return (
 
 
-        <div className="h-80 flex flex-col rounded-lg border-2 border-gray-300">
+        <div className="h-full flex flex-col rounded-lg border-2 border-gray-300">
             <div className="flex flex-col bg-gray-100">
                 <div className="flex flex-row justify-between p-4 rounded-t-lg">
                     <div className="text-gray-600 m-4 flex-row flex">

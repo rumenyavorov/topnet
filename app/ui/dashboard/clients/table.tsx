@@ -1,6 +1,8 @@
-import { fetchClients, fetchFilteredClients } from "@/app/lib/data";
+import { fetchClients, fetchFilteredClients } from "@/app/lib/db/clients";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { DeleteClient, UpdateClient } from "./buttons";
+import { fetchInternetPlanById, fetchInternetPlans } from "@/app/lib/db/internetPlans";
+import Badge from "../../badge";
 
 export default async function Table({
     query,
@@ -27,13 +29,19 @@ export default async function Table({
                                 Адрес
                             </th>
                             <th scope="col" className="py-3 px-6">
-                                План
+                                Интернет план
+                            </th>
+                            <th scope="col" className="py-3 px-6">
+                                ТВ план
                             </th>
                             <th scope="col" className="py-3 px-6">
                                 Описание
                             </th>
                             <th scope="col" className="py-3 px-6">
                                 Дата на създаване
+                            </th>
+                            <th scope="col" className="py-3 px-6">
+                                Статус
                             </th>
                             <th scope="col" className="py-3 px-6">
                                 Действия
@@ -53,13 +61,19 @@ export default async function Table({
                                     {client.address}
                                 </td>
                                 <td className="py-4 px-6">
-                                    {client.plan} {/* Assuming `plan` has a `name` property */}
+                                    {client.internetPlan.name} {/* Assuming `plan` has a `name` property */}
+                                </td>
+                                <td className="py-4 px-6">
+                                    {client.tvPlan?.name} {/* Assuming `plan` has a `name` property */}
                                 </td>
                                 <td className="py-4 px-6">
                                     {client.description} {/* Display 'N/A' if description is missing */}
                                 </td>
                                 <td>
                                     {client.createdAt.toLocaleDateString('bg-BG')}
+                                </td>
+                                <td className="py-4 px-6">
+                                    <Badge text={client.status.nameBg} color={client.status.color} />
                                 </td>
                                 <td className="py-4 px-6">
                                     <div className="flex flex-row gap-8">

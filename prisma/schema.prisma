@@ -7,20 +7,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model clients {
-  id          Int      @id @default(autoincrement())
-  firstName   String   @db.VarChar(255)
-  lastName    String   @db.VarChar(255)
-  plan        String   @db.VarChar(255)
-  address     String   @db.VarChar(255)
-  description String?
-  status      String   @db.VarChar(200)
-  createdAt   DateTime @default(now())
+model Clients {
+  id             Int          @id @default(autoincrement())
+  firstName      String       @db.VarChar(255)
+  lastName       String       @db.VarChar(255)
+  address        String       @db.VarChar(255)
+  description    String?
+  createdAt      DateTime     @default(now())
+  tvPlanId       Int?
+  internetPlanId Int
+  statusId       Int
+  status         Status       @relation(fields: [statusId], references: [id])
+  tvPlan         TvPlan?      @relation(fields: [tvPlanId], references: [id])
+  internetPlan   InternetPlan @relation(fields: [internetPlanId], references: [id])
+  Incidents      Incidents[]
+
+  @@map("clients")
 }
 
-model incidents {
+model Status {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  nameBg  String    @db.VarChar(255)
+  color   String    @db.VarChar(255)
+  Clients Clients[]
+
+  @@map("statuses")
+}
+
+model InternetPlan {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  speed   Int
+  price   Int
+  Clients Clients[]
+
+  @@map("internet_plan")
+}
+
+model TvPlan {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(255)
+  Clients Clients[]
+
+  @@map("tv_plan")
+}
+
+model Incidents {
   id          Int     @id @default(autoincrement())
   address     String  @db.VarChar(255)
   description String?
   status      String  @db.VarChar(10)
+  clientId    Int // Foreign key for Clients
+  client      Clients @relation(fields: [clientId], references: [id]) // Relation to Clients
+
+  @@map("incidents")
 }

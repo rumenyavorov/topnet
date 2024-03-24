@@ -1,8 +1,10 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  ExclamationCircleIcon,
+  CalendarIcon
 } from '@heroicons/react/24/outline';
+// import { CalendarIcon, ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
@@ -11,9 +13,10 @@ const links = [
   {
     name: 'Аварии',
     href: '/dashboard/incidents',
-    icon: DocumentDuplicateIcon,
+    icon: ExclamationCircleIcon,
   },
   { name: 'Клиенти', href: '/dashboard/clients', icon: UserGroupIcon },
+  { name: 'Календар', href: '/dashboard/calendar', icon: CalendarIcon },
 ];
 
 export default function NavLinks() {

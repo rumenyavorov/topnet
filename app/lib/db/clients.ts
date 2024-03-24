@@ -1,11 +1,13 @@
 'use server';
 
 import { unstable_noStore } from "next/cache";
-import prisma from "./prisma";
+import prisma from "../prisma";
+import { Clients, Status } from "@prisma/client";
 
-export const fetchClients = async () => {
+export const fetchClients = async (query: string, currentPage: number) => {
     unstable_noStore();
     const clients = await prisma.clients.findMany({
+
         orderBy: {
             id: 'desc'
         }
@@ -14,6 +16,81 @@ export const fetchClients = async () => {
     const data = await Promise.resolve(clients);
 
     return data;
+};
+const ITEMS_PER_SCROLL = 7;
+
+export const fetchClientsTodoPages = async (query: string, currentPage: number) => {
+    const skipPage = currentPage * ITEMS_PER_SCROLL;
+    const totalClients = await prisma.clients.count({
+        where: {
+            status: {
+                name: {
+                    notIn: ['completed', 'rejected'],
+                },
+            },
+            OR: [
+                {
+                    firstName: {
+                        contains: query,
+                        mode: 'insensitive'
+                    },
+                },
+
+            ]
+        },
+        take: ITEMS_PER_SCROLL,
+        skip: skipPage,
+    });
+
+    const totalPages = Math.ceil(totalClients / ITEMS_PER_SCROLL); // Calculate the total number of pages
+    return totalPages;
+};
+
+export type ClientWithStatus = Clients & {
+    status: Status;
+  };
+
+export const fetchClientsTodo = async (query: string, currentPage: number) => {
+    const skipPage = currentPage * ITEMS_PER_SCROLL;
+    const clients = await prisma.clients.findMany({
+        where: {
+            OR: [
+                {
+                    firstName: {
+                        contains: query,
+                        mode: 'insensitive'
+                    },
+                },
+                {
+                    lastName: {
+                        contains: query,
+                        mode: 'insensitive'
+                    },
+                },
+                {
+
+                    address: {
+                        contains: query,
+                        mode: 'insensitive'
+                    },
+                },
+                {
+                    createdAt: {
+                        // lte: new Date(query) ?? ''
+                    },
+                }
+            ]
+        },
+        orderBy: {
+            id: 'desc'
+        },
+        include: {
+            status: true,
+        },
+        take: ITEMS_PER_SCROLL,
+        skip: skipPage,
+    });
+    return clients;
 };
 
 export const fetchClientById = async (id: string) => {
@@ -34,15 +111,19 @@ export const fetchCardData = async () => {
     // unstable_noStore();
     const pendingClients = await prisma.clients.count({
         where: {
-            status: 'pending'
+            status: {
+                name: "toConfirm"
+            }
         }
     });
     const newClients = await prisma.clients.count({
         where: {
-            status: 'new'
+            status: {
+                name: "new"
+            }
         }
     });
-    
+
     // console.log(newClients);
     const data = await Promise.all([
         pendingClients,
@@ -95,6 +176,11 @@ export async function fetchFilteredClients(
                     },
                 }
             ]
+        },
+        include: {
+            internetPlan: true,
+            tvPlan: true,
+            status: true,
         },
         take: ITEMS_PER_PAGE,
         skip: skip
